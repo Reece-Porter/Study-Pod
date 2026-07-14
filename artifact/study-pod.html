@@ -1,0 +1,519 @@
+<title>Study Pod — learn anything as a conversation</title>
+<style>
+  :root {
+    --bg: #14181d;
+    --surface: #1e252d;
+    --surface-2: #28313b;
+    --border: rgba(233, 237, 241, 0.09);
+    --text: #e9edf1;
+    --dim: #98a5b2;
+    --accent: #f5a83c;
+    --accent-ink: #2a1c04;
+    --alex: #66b8e8;
+    --sam: #7edda6;
+    --danger: #ff8f8f;
+    --glow-a: rgba(245, 168, 60, 0.07);
+    --glow-b: rgba(102, 184, 232, 0.06);
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #edece6;
+      --surface: #f7f6f2;
+      --surface-2: #e4e2da;
+      --border: rgba(36, 42, 49, 0.12);
+      --text: #242a31;
+      --dim: #5d6873;
+      --accent: #b36f14;
+      --accent-ink: #fff8ec;
+      --alex: #1d6fa3;
+      --sam: #1f7a4d;
+      --danger: #b03434;
+      --glow-a: rgba(179, 111, 20, 0.06);
+      --glow-b: rgba(29, 111, 163, 0.05);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #14181d;
+    --surface: #1e252d;
+    --surface-2: #28313b;
+    --border: rgba(233, 237, 241, 0.09);
+    --text: #e9edf1;
+    --dim: #98a5b2;
+    --accent: #f5a83c;
+    --accent-ink: #2a1c04;
+    --alex: #66b8e8;
+    --sam: #7edda6;
+    --danger: #ff8f8f;
+    --glow-a: rgba(245, 168, 60, 0.07);
+    --glow-b: rgba(102, 184, 232, 0.06);
+  }
+  :root[data-theme="light"] {
+    --bg: #edece6;
+    --surface: #f7f6f2;
+    --surface-2: #e4e2da;
+    --border: rgba(36, 42, 49, 0.12);
+    --text: #242a31;
+    --dim: #5d6873;
+    --accent: #b36f14;
+    --accent-ink: #fff8ec;
+    --alex: #1d6fa3;
+    --sam: #1f7a4d;
+    --danger: #b03434;
+    --glow-a: rgba(179, 111, 20, 0.06);
+    --glow-b: rgba(29, 111, 163, 0.05);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    min-height: 100vh;
+    background:
+      radial-gradient(1100px 550px at 82% -8%, var(--glow-a), transparent 60%),
+      radial-gradient(900px 480px at 8% 108%, var(--glow-b), transparent 60%),
+      var(--bg);
+    color: var(--text);
+    font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+    line-height: 1.6;
+  }
+
+  .wrap { max-width: 720px; margin: 0 auto; padding: 2.25rem 1.25rem 4rem; }
+
+  .masthead { text-align: center; margin-bottom: 1.75rem; }
+  .brand {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.8rem; font-weight: 700; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--accent);
+  }
+  .brand .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+  h1 {
+    font-size: clamp(1.8rem, 5.5vw, 2.6rem);
+    line-height: 1.12; margin: 0.6rem 0 0.4rem;
+    text-wrap: balance; font-weight: 700;
+  }
+  .tagline { color: var(--dim); margin: 0 auto; max-width: 32rem; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.4rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .label {
+    display: block;
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.72rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--dim); margin-bottom: 0.45rem;
+  }
+
+  #topic {
+    width: 100%; padding: 0.85rem 1rem;
+    font-size: 1.05rem; font-family: inherit;
+    color: var(--text); background: var(--surface-2);
+    border: 1px solid var(--border); border-radius: 10px; outline: none;
+  }
+  #topic:focus { border-color: var(--accent); }
+
+  .options { display: flex; flex-wrap: wrap; gap: 1.1rem; margin: 1.1rem 0; }
+  .opt { flex: 1 1 240px; }
+  .seg { display: flex; background: var(--surface-2); border-radius: 10px; padding: 4px; gap: 4px; }
+  .seg label { flex: 1; cursor: pointer; position: relative; }
+  .seg input { position: absolute; opacity: 0; pointer-events: none; }
+  .seg span {
+    display: block; text-align: center; padding: 0.42rem 0.4rem; border-radius: 7px;
+    font-family: ui-sans-serif, system-ui, sans-serif; font-size: 0.83rem; color: var(--dim);
+  }
+  .seg input:checked + span { background: var(--accent); color: var(--accent-ink); font-weight: 700; }
+  .seg input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  .go {
+    width: 100%; padding: 0.9rem 1.2rem;
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 1rem; font-weight: 700;
+    color: var(--accent-ink); background: var(--accent);
+    border: none; border-radius: 10px; cursor: pointer;
+  }
+  .go:disabled { opacity: 0.55; cursor: wait; }
+  .go:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+
+  .error {
+    color: var(--danger);
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.9rem; margin: 0.7rem 0 0;
+  }
+
+  .loading { text-align: center; padding: 2.2rem 1.4rem; }
+  .spinner {
+    width: 42px; height: 42px; margin: 0 auto 1rem;
+    border: 4px solid var(--surface-2); border-top-color: var(--accent);
+    border-radius: 50%; animation: spin 0.9s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-sub { color: var(--dim); font-size: 0.9rem; margin: 0.2rem 0 0; }
+
+  .ep-head { display: flex; align-items: baseline; gap: 0.6rem; }
+  h2 { margin: 0 0 0.2rem; font-size: 1.4rem; line-height: 1.25; text-wrap: balance; }
+  .meter { display: none; align-items: flex-end; gap: 2px; height: 14px; flex: none; }
+  .meter i { width: 3px; background: var(--accent); border-radius: 1px; animation: bounce 0.9s ease-in-out infinite; }
+  .meter i:nth-child(2) { animation-delay: 0.2s; }
+  .meter i:nth-child(3) { animation-delay: 0.45s; }
+  .playing .meter { display: inline-flex; }
+  @keyframes bounce { 0%, 100% { height: 4px; } 50% { height: 14px; } }
+  @media (prefers-reduced-motion: reduce) {
+    .spinner { animation-duration: 2s; }
+    .meter i { animation: none; height: 10px; }
+  }
+
+  .meta {
+    color: var(--dim);
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.83rem; margin: 0 0 1.1rem;
+  }
+
+  .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 0.55rem; margin-bottom: 0.9rem; }
+  .btn {
+    padding: 0.55rem 1rem;
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.9rem; font-weight: 600;
+    color: var(--text); background: var(--surface-2);
+    border: 1px solid var(--border); border-radius: 10px; cursor: pointer;
+  }
+  .btn.primary { color: var(--accent-ink); background: var(--accent); border-color: transparent; font-weight: 700; }
+  .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .speed {
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.83rem; color: var(--dim);
+    display: inline-flex; align-items: center; gap: 0.4rem;
+  }
+  .speed select {
+    background: var(--surface-2); color: var(--text);
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: 0.35rem 0.45rem; font-family: inherit;
+  }
+
+  .progress { height: 6px; background: var(--surface-2); border-radius: 3px; overflow: hidden; margin-bottom: 1.1rem; }
+  .bar { height: 100%; width: 0%; background: var(--accent); transition: width 0.3s ease; }
+
+  .transcript { max-height: 25rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.55rem; }
+  .line {
+    padding: 0.6rem 0.85rem; border-radius: 10px;
+    background: var(--surface-2); border-left: 3px solid transparent;
+    cursor: pointer;
+  }
+  .line:hover { filter: brightness(1.08); }
+  .line .who {
+    display: block;
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; margin-bottom: 0.1rem;
+  }
+  .line.alex { border-left-color: var(--alex); }
+  .line.alex .who { color: var(--alex); }
+  .line.sam { border-left-color: var(--sam); }
+  .line.sam .who { color: var(--sam); }
+  .line.active { outline: 1.5px solid var(--accent); }
+
+  .note {
+    color: var(--dim);
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.83rem; margin-top: 0.9rem;
+  }
+  .footer {
+    text-align: center; color: var(--dim);
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.78rem; margin-top: 1.5rem;
+  }
+  [hidden] { display: none !important; }
+</style>
+
+<div class="wrap">
+  <header class="masthead">
+    <span class="brand"><span class="dot"></span>Study Pod</span>
+    <h1>Learn anything, as a conversation.</h1>
+    <p class="tagline">Type a topic and get a podcast episode where two hosts teach it to you — written and voiced right on this page.</p>
+  </header>
+
+  <form id="form" class="card">
+    <label class="label" for="topic">What do you want to learn?</label>
+    <input id="topic" type="text" autocomplete="off" required
+      placeholder="e.g. How does photosynthesis work? · The French Revolution · Bayes' theorem" />
+
+    <div class="options">
+      <div class="opt">
+        <span class="label">Episode length</span>
+        <div class="seg" role="radiogroup" aria-label="Episode length">
+          <label><input type="radio" name="len" value="short" /><span>~5 min</span></label>
+          <label><input type="radio" name="len" value="medium" checked /><span>~10 min</span></label>
+          <label><input type="radio" name="len" value="long" /><span>~20 min</span></label>
+        </div>
+      </div>
+      <div class="opt">
+        <span class="label">Your level</span>
+        <div class="seg" role="radiogroup" aria-label="Audience level">
+          <label><input type="radio" name="lvl" value="beginner" checked /><span>Beginner</span></label>
+          <label><input type="radio" name="lvl" value="intermediate" /><span>Intermediate</span></label>
+          <label><input type="radio" name="lvl" value="advanced" /><span>Advanced</span></label>
+        </div>
+      </div>
+    </div>
+
+    <button type="submit" id="go" class="go">Create my episode</button>
+    <p id="err" class="error" hidden></p>
+  </form>
+
+  <section id="loading" class="card loading" hidden>
+    <div class="spinner"></div>
+    <p id="loading-msg">Writing your episode — the hosts are prepping their notes…</p>
+    <p class="loading-sub">Longer episodes can take a minute or two.</p>
+  </section>
+
+  <section id="player" class="card" hidden>
+    <div class="ep-head">
+      <span class="meter" aria-hidden="true"><i></i><i></i><i></i></span>
+      <h2 id="ep-title"></h2>
+    </div>
+    <p id="ep-meta" class="meta"></p>
+
+    <div class="controls">
+      <button id="play" class="btn primary">▶ Play</button>
+      <button id="restart" class="btn">⏹ Restart</button>
+      <label class="speed">Speed
+        <select id="speed">
+          <option value="0.85">0.85×</option>
+          <option value="1" selected>1×</option>
+          <option value="1.15">1.15×</option>
+          <option value="1.3">1.3×</option>
+        </select>
+      </label>
+      <button id="download" class="btn">⭳ Transcript</button>
+    </div>
+
+    <div class="progress"><div id="bar" class="bar"></div></div>
+    <div id="transcript" class="transcript"></div>
+    <p class="note" id="tts-note" hidden>Speech isn't available in this browser, but you can read the transcript below.</p>
+  </section>
+
+  <p class="footer">Episodes are written by Claude through this page and voiced by your browser. Click any line to jump there.</p>
+</div>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const form = $("form"), topicEl = $("topic"), goBtn = $("go"), errEl = $("err");
+  const loadingEl = $("loading"), loadingMsg = $("loading-msg");
+  const playerEl = $("player"), titleEl = $("ep-title"), metaEl = $("ep-meta");
+  const transcriptEl = $("transcript"), playBtn = $("play"), restartBtn = $("restart");
+  const speedSel = $("speed"), dlBtn = $("download"), bar = $("bar"), ttsNote = $("tts-note");
+
+  const ttsOK = "speechSynthesis" in window;
+  const canGenerate = typeof window.claude?.complete === "function";
+
+  const LEN = {
+    short:  { label: "~5 min",  words: "roughly 700 to 900 words of dialogue" },
+    medium: { label: "~10 min", words: "roughly 1,400 to 1,800 words of dialogue" },
+    long:   { label: "~20 min", words: "roughly 2,600 to 3,200 words of dialogue" },
+  };
+  const LVL = {
+    beginner: "The listener is completely new to this topic. Define every term, lean on everyday analogies, avoid jargon.",
+    intermediate: "The listener knows the basics. Skip introductory definitions; go deeper into mechanisms, trade-offs, and misconceptions.",
+    advanced: "The listener is experienced. Discuss nuances, edge cases, current debates, and adjacent connections at a technical level.",
+  };
+
+  let episode = null, idx = 0, playing = false;
+  let voices = { ALEX: null, SAM: null };
+
+  // ---------- voices ----------
+  function pickVoices() {
+    if (!ttsOK) return;
+    const all = speechSynthesis.getVoices();
+    if (!all.length) return;
+    const en = all.filter((v) => v.lang.toLowerCase().startsWith("en"));
+    const pool = en.length ? en : all;
+    const score = (v) => (v.localService ? 2 : 0) + (/natural|neural|premium|enhanced/i.test(v.name) ? 3 : 0) + (v.default ? 1 : 0);
+    const ranked = [...pool].sort((a, b) => score(b) - score(a));
+    voices.SAM = ranked[0] || null;
+    voices.ALEX = ranked.find((v) => v !== voices.SAM) || ranked[0] || null;
+  }
+  if (ttsOK) { pickVoices(); speechSynthesis.onvoiceschanged = pickVoices; }
+
+  // ---------- generation ----------
+  function buildPrompt(topic, len, lvl) {
+    return `You are the script writer for "Study Pod", a podcast that teaches any topic through a natural conversation between two hosts:
+- ALEX: the curious co-host. Alex stands in for the listener — asking the questions a smart learner would ask, requesting examples, occasionally summarizing to check understanding.
+- SAM: the expert. Sam explains clearly and enthusiastically, uses vivid analogies and concrete examples, breaks complex ideas into steps.
+
+Write an episode that actually teaches, structured as:
+1. A short, hooky cold open — why this topic matters or a surprising fact.
+2. The fundamentals, one idea at a time, each anchored with an analogy or example.
+3. Deeper material, common misconceptions, or practical applications.
+4. A recap where Alex summarizes key takeaways and Sam fills gaps, then a warm sign-off.
+
+Style rules: spoken language only (contractions, short sentences, no lists, no stage directions, no markdown); nothing that can't be read aloud naturally; keep turns short (one to four sentences); Alex drives the conversation with real questions; accuracy over entertainment — if something is simplified, Sam says so.
+
+Topic: "${topic}"
+Episode length: ${LEN[len].words}.
+Audience: ${LVL[lvl]}
+
+Respond with ONLY a valid JSON object — no markdown fences, no commentary before or after — in exactly this shape:
+{"title": "episode title", "lines": [{"speaker": "ALEX", "text": "..."}, {"speaker": "SAM", "text": "..."}]}`;
+  }
+
+  function parseScript(raw) {
+    let text = raw.trim();
+    const fence = text.match(/```(?:json)?\s*([\s\S]*?)```/);
+    if (fence) text = fence[1].trim();
+    const start = text.indexOf("{");
+    const end = text.lastIndexOf("}");
+    if (start !== -1 && end > start) text = text.slice(start, end + 1);
+    try {
+      const s = JSON.parse(text);
+      if (s.title && Array.isArray(s.lines) && s.lines.length) return s;
+    } catch { /* fall through to salvage */ }
+    // Salvage: pull out every complete {speaker, text} pair even if the JSON was truncated.
+    const title = (text.match(/"title"\s*:\s*"((?:[^"\\]|\\.)*)"/) || [])[1];
+    const lines = [];
+    const re = /\{\s*"speaker"\s*:\s*"(ALEX|SAM)"\s*,\s*"text"\s*:\s*"((?:[^"\\]|\\.)*)"\s*\}/g;
+    let m;
+    while ((m = re.exec(text))) lines.push({ speaker: m[1], text: JSON.parse('"' + m[2] + '"') });
+    if (title && lines.length > 3) return { title: JSON.parse('"' + title + '"'), lines };
+    throw new Error("The script came back unreadable. Try again, or pick a shorter episode length.");
+  }
+
+  const spinnerMsgs = [
+    "Writing your episode — the hosts are prepping their notes…",
+    "Sam is gathering the best analogies…",
+    "Alex is drafting the questions you'd ask…",
+    "Recording the cold open…",
+  ];
+  let spinTimer = null;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    errEl.hidden = true;
+    const topic = topicEl.value.trim();
+    if (!topic) return;
+    if (!canGenerate) {
+      errEl.textContent = "This page needs to be opened as a Claude artifact on claude.ai to generate episodes.";
+      errEl.hidden = false;
+      return;
+    }
+
+    const fields = new FormData(form);
+    const len = fields.get("len"), lvl = fields.get("lvl");
+
+    stopSpeech();
+    playerEl.hidden = true;
+    loadingEl.hidden = false;
+    goBtn.disabled = true;
+    let i = 0;
+    spinTimer = setInterval(() => { loadingMsg.textContent = spinnerMsgs[++i % spinnerMsgs.length]; }, 6000);
+
+    try {
+      const raw = await window.claude.complete(buildPrompt(topic, len, lvl));
+      const script = parseScript(raw);
+      episode = { title: script.title, lines: script.lines, topic, len, lvl };
+      render();
+    } catch (ex) {
+      errEl.textContent = ex.message || "Something went wrong writing the episode. Please try again.";
+      errEl.hidden = false;
+    } finally {
+      clearInterval(spinTimer);
+      loadingMsg.textContent = spinnerMsgs[0];
+      loadingEl.hidden = true;
+      goBtn.disabled = false;
+    }
+  });
+
+  // ---------- render ----------
+  function render() {
+    titleEl.textContent = episode.title;
+    metaEl.textContent = `${episode.topic} · ${LEN[episode.len].label} · ${episode.lvl} · ${episode.lines.length} exchanges`;
+    transcriptEl.innerHTML = "";
+    episode.lines.forEach((line, i) => {
+      const div = document.createElement("div");
+      div.className = `line ${line.speaker.toLowerCase()}`;
+      div.dataset.i = i;
+      const who = document.createElement("span");
+      who.className = "who";
+      who.textContent = line.speaker;
+      const txt = document.createElement("span");
+      txt.textContent = line.text;
+      div.append(who, txt);
+      div.addEventListener("click", () => jump(i));
+      transcriptEl.appendChild(div);
+    });
+    idx = 0;
+    updateBar();
+    ttsNote.hidden = ttsOK;
+    playBtn.disabled = !ttsOK;
+    playerEl.hidden = false;
+    playerEl.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  // ---------- playback ----------
+  function speak(i) {
+    if (!episode || i >= episode.lines.length) { stopSpeech(); idx = 0; updateBar(); return; }
+    idx = i;
+    highlight(i);
+    updateBar();
+    const line = episode.lines[i];
+    const u = new SpeechSynthesisUtterance(line.text);
+    if (voices[line.speaker]) u.voice = voices[line.speaker];
+    const same = voices.ALEX === voices.SAM;
+    u.pitch = line.speaker === "ALEX" ? (same ? 1.25 : 1.05) : same ? 0.85 : 1.0;
+    u.rate = parseFloat(speedSel.value);
+    u.onend = () => { if (playing) speak(i + 1); };
+    u.onerror = (e) => { if (playing && e.error !== "interrupted" && e.error !== "canceled") speak(i + 1); };
+    speechSynthesis.speak(u);
+  }
+
+  function start(from = idx) {
+    if (!ttsOK || !episode) return;
+    speechSynthesis.cancel();
+    playing = true;
+    playerEl.classList.add("playing");
+    playBtn.textContent = "⏸ Pause";
+    speak(from);
+  }
+  function stopSpeech() {
+    playing = false;
+    playerEl.classList.remove("playing");
+    if (ttsOK) speechSynthesis.cancel();
+    playBtn.textContent = "▶ Play";
+  }
+  function jump(i) {
+    if (playing) start(i);
+    else { idx = i; highlight(i); updateBar(); }
+  }
+
+  playBtn.addEventListener("click", () => (playing ? stopSpeech() : start()));
+  restartBtn.addEventListener("click", () => { stopSpeech(); idx = 0; highlight(-1); updateBar(); transcriptEl.scrollTop = 0; });
+  speedSel.addEventListener("change", () => { if (playing) start(idx); });
+
+  function highlight(i) {
+    transcriptEl.querySelectorAll(".line").forEach((el) => {
+      const on = Number(el.dataset.i) === i;
+      el.classList.toggle("active", on);
+      if (on) el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    });
+  }
+  function updateBar() {
+    if (episode) bar.style.width = `${(idx / episode.lines.length) * 100}%`;
+  }
+
+  // ---------- download ----------
+  dlBtn.addEventListener("click", () => {
+    if (!episode) return;
+    const text = [episode.title, `Topic: ${episode.topic} · Level: ${episode.lvl}`, "",
+      ...episode.lines.map((l) => `${l.speaker}: ${l.text}`)].join("\n\n");
+    const url = URL.createObjectURL(new Blob([text], { type: "text/plain" }));
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = (episode.title.replace(/[^\w\s-]/g, "").trim().replace(/\s+/g, "-").toLowerCase() || "study-pod-episode") + ".txt";
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+})();
+</script>
