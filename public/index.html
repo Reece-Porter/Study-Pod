@@ -15,6 +15,21 @@
     </header>
 
     <form id="generate-form" class="card">
+      <div id="key-section" class="key-section" hidden>
+        <label for="api-key" class="field-label">Your Anthropic API key</label>
+        <input
+          id="api-key"
+          type="password"
+          placeholder="sk-ant-..."
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <p class="key-note">
+          Stored only in this browser and sent only to Anthropic.
+          Get a key at <a href="https://platform.claude.com" target="_blank" rel="noopener">platform.claude.com</a>.
+        </p>
+      </div>
+
       <label for="topic" class="field-label">What do you want to learn?</label>
       <input
         id="topic"
@@ -89,6 +104,6 @@
     </footer>
   </main>
 
-  <script src="app.js"></script>
+  <script type="module" src="app.js"></script>
 </body>
 </html>

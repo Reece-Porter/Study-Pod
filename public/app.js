@@ -1,3 +1,11 @@
+import {
+  MODEL,
+  MAX_TOKENS,
+  SCRIPT_SCHEMA,
+  SYSTEM_PROMPT,
+  buildUserPrompt,
+} from "./prompts.js";
+
 const form = document.getElementById("generate-form");
 const topicInput = document.getElementById("topic");
 const generateBtn = document.getElementById("generate-btn");
@@ -13,13 +21,39 @@ const speedSelect = document.getElementById("speed");
 const downloadBtn = document.getElementById("download-btn");
 const progressBar = document.getElementById("progress-bar");
 const ttsNote = document.getElementById("tts-note");
+const keySection = document.getElementById("key-section");
+const keyInput = document.getElementById("api-key");
 
 const ttsSupported = "speechSynthesis" in window;
+const KEY_STORAGE = "study-pod-api-key";
 
+let serverMode = false; // true when a backend with the API key is available
 let episode = null; // { title, lines: [{speaker, text}], topic, length, level }
 let currentIndex = 0;
 let playing = false;
 let voices = { ALEX: null, SAM: null };
+
+// ---------- Mode detection ----------
+// When served by server.js, /api/health answers and the server holds the key.
+// On static hosting (e.g. GitHub Pages) there is no backend, so the browser
+// calls the Claude API directly with a key the user provides.
+
+async function detectMode() {
+  try {
+    const res = await fetch("api/health");
+    if (res.ok) {
+      const data = await res.json();
+      serverMode = data.ok === true;
+    }
+  } catch {
+    serverMode = false;
+  }
+  keySection.hidden = serverMode;
+  if (!serverMode) {
+    keyInput.value = localStorage.getItem(KEY_STORAGE) || "";
+  }
+}
+detectMode();
 
 // ---------- Voice selection ----------
 
@@ -58,8 +92,10 @@ form.addEventListener("submit", async (e) => {
   const topic = topicInput.value.trim();
   if (!topic) return;
 
-  const length = form.elements.length.value;
-  const level = form.elements.level.value;
+  // NB: form.elements.length is the control count, not the "length" radio group
+  const fields = new FormData(form);
+  const length = fields.get("length");
+  const level = fields.get("level");
 
   stopPlayback();
   playerEl.hidden = true;
@@ -67,14 +103,9 @@ form.addEventListener("submit", async (e) => {
   generateBtn.disabled = true;
 
   try {
-    const res = await fetch("/api/generate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ topic, length, level }),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Failed to generate the episode.");
-    episode = data;
+    episode = serverMode
+      ? await generateViaServer(topic, length, level)
+      : await generateInBrowser(topic, length, level);
     renderEpisode();
   } catch (err) {
     formError.textContent = err.message;
@@ -84,6 +115,108 @@ form.addEventListener("submit", async (e) => {
     generateBtn.disabled = false;
   }
 });
+
+async function generateViaServer(topic, length, level) {
+  const res = await fetch("api/generate", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ topic, length, level }),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "Failed to generate the episode.");
+  return data;
+}
+
+async function generateInBrowser(topic, length, level) {
+  const key = keyInput.value.trim();
+  if (!key) {
+    keyInput.focus();
+    throw new Error("Enter your Anthropic API key above — it stays in this browser and is only sent to Anthropic.");
+  }
+  localStorage.setItem(KEY_STORAGE, key);
+
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      "x-api-key": key,
+      "anthropic-version": "2023-06-01",
+      "anthropic-dangerous-direct-browser-access": "true",
+    },
+    body: JSON.stringify({
+      model: MODEL,
+      max_tokens: MAX_TOKENS,
+      stream: true,
+      thinking: { type: "adaptive" },
+      system: SYSTEM_PROMPT,
+      output_config: { format: { type: "json_schema", schema: SCRIPT_SCHEMA } },
+      messages: [{ role: "user", content: buildUserPrompt(topic, length, level) }],
+    }),
+  });
+
+  if (!res.ok) {
+    let message = `The Claude API returned an error (${res.status}).`;
+    try {
+      const err = await res.json();
+      if (err?.error?.message) message = err.error.message;
+    } catch {
+      /* non-JSON error body */
+    }
+    if (res.status === 401) {
+      message = "That API key was rejected. Double-check it (it should start with sk-ant-) and try again.";
+    } else if (res.status === 429) {
+      message = "Rate limited — please wait a moment and try again.";
+    }
+    throw new Error(message);
+  }
+
+  // Accumulate the streamed response (SSE)
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+  let text = "";
+  let stopReason = null;
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    const events = buffer.split("\n\n");
+    buffer = events.pop();
+    for (const raw of events) {
+      const dataLine = raw.split("\n").find((l) => l.startsWith("data:"));
+      if (!dataLine) continue;
+      let ev;
+      try {
+        ev = JSON.parse(dataLine.slice(5));
+      } catch {
+        continue;
+      }
+      if (ev.type === "content_block_delta" && ev.delta?.type === "text_delta") {
+        text += ev.delta.text;
+      } else if (ev.type === "message_delta" && ev.delta?.stop_reason) {
+        stopReason = ev.delta.stop_reason;
+      } else if (ev.type === "error") {
+        throw new Error(ev.error?.message || "The Claude API reported a streaming error.");
+      }
+    }
+  }
+
+  if (stopReason === "refusal") {
+    throw new Error("This topic couldn't be turned into an episode. Try rephrasing it or picking a different topic.");
+  }
+  if (stopReason === "max_tokens") {
+    throw new Error("The episode came out too long to finish. Try a shorter episode length.");
+  }
+
+  let script;
+  try {
+    script = JSON.parse(text);
+  } catch {
+    throw new Error("The model returned an unreadable script. Please try again.");
+  }
+  return { title: script.title, lines: script.lines, topic, length, level };
+}
 
 function renderEpisode() {
   titleEl.textContent = episode.title;

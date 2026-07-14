@@ -82,6 +82,35 @@ h1 {
 
 #topic:focus { border-color: var(--accent); }
 
+.key-section {
+  margin-bottom: 1.25rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+#api-key {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  font-size: 0.95rem;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  outline: none;
+}
+
+#api-key:focus { border-color: var(--accent); }
+
+.key-note {
+  color: var(--text-dim);
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.8rem;
+  margin: 0.5rem 0 0;
+}
+
+.key-note a { color: var(--accent); }
+
 .options {
   display: flex;
   flex-wrap: wrap;
