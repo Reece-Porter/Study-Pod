@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Study Pod — turn any topic into a podcast</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="container">
+    <header class="hero">
+      <div class="logo">🎙️ Study Pod</div>
+      <h1>Learn anything, as a conversation.</h1>
+      <p class="tagline">Type what you want to study and get a listenable podcast where two hosts teach it to you.</p>
+    </header>
+
+    <form id="generate-form" class="card">
+      <label for="topic" class="field-label">What do you want to learn?</label>
+      <input
+        id="topic"
+        name="topic"
+        type="text"
+        placeholder="e.g. How does photosynthesis work? · The French Revolution · Bayes' theorem"
+        autocomplete="off"
+        required
+      />
+
+      <div class="options">
+        <div class="option-group">
+          <span class="field-label">Episode length</span>
+          <div class="segmented" role="radiogroup" aria-label="Episode length">
+            <label><input type="radio" name="length" value="short" /><span>~5 min</span></label>
+            <label><input type="radio" name="length" value="medium" checked /><span>~10 min</span></label>
+            <label><input type="radio" name="length" value="long" /><span>~20 min</span></label>
+          </div>
+        </div>
+        <div class="option-group">
+          <span class="field-label">Your level</span>
+          <div class="segmented" role="radiogroup" aria-label="Audience level">
+            <label><input type="radio" name="level" value="beginner" checked /><span>Beginner</span></label>
+            <label><input type="radio" name="level" value="intermediate" /><span>Intermediate</span></label>
+            <label><input type="radio" name="level" value="advanced" /><span>Advanced</span></label>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" id="generate-btn" class="primary-btn">
+        <span class="btn-label">Create my episode</span>
+      </button>
+      <p id="form-error" class="error" hidden></p>
+    </form>
+
+    <section id="loading" class="card loading" hidden>
+      <div class="spinner"></div>
+      <p id="loading-text">Writing your episode… the hosts are prepping their notes.</p>
+      <p class="loading-sub">Longer episodes can take a minute or two.</p>
+    </section>
+
+    <section id="player" class="card player" hidden>
+      <h2 id="episode-title"></h2>
+      <p id="episode-meta" class="episode-meta"></p>
+
+      <div class="controls">
+        <button id="play-btn" class="primary-btn control-btn">▶ Play</button>
+        <button id="stop-btn" class="ghost-btn control-btn">⏹ Restart</button>
+        <label class="speed-control">
+          Speed
+          <select id="speed">
+            <option value="0.85">0.85×</option>
+            <option value="1" selected>1×</option>
+            <option value="1.15">1.15×</option>
+            <option value="1.3">1.3×</option>
+          </select>
+        </label>
+        <button id="download-btn" class="ghost-btn control-btn">⭳ Transcript</button>
+      </div>
+
+      <div class="progress"><div id="progress-bar" class="progress-bar"></div></div>
+
+      <div id="transcript" class="transcript" aria-live="off"></div>
+
+      <p class="tts-note" id="tts-note" hidden>
+        Your browser doesn't support speech synthesis, so playback is unavailable — but you can still read the transcript below.
+      </p>
+    </section>
+
+    <footer class="footer">
+      <p>Episodes are written by Claude and voiced by your browser. Click any line to jump there.</p>
+    </footer>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
