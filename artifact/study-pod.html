@@ -106,7 +106,7 @@
     font-family: ui-sans-serif, system-ui, sans-serif;
     font-size: 0.72rem; font-weight: 700;
     text-transform: uppercase; letter-spacing: 0.1em;
-    color: var(--dim); margin-bottom: 0.45rem;
+    color: var(--dim); margin-bottom: 0.55rem;
   }
 
   #topic {
@@ -215,10 +215,28 @@
   .line.sam .who { color: var(--sam); }
   .line.active { outline: 1.5px solid var(--accent); }
 
+  .library-list { display: flex; flex-direction: column; gap: 0.55rem; }
+  .ep-item {
+    display: flex; flex-direction: column; gap: 0.12rem;
+    text-align: left; width: 100%;
+    padding: 0.75rem 0.95rem; border-radius: 10px;
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    color: var(--text); font-family: inherit; font-size: 1.02rem;
+    cursor: pointer;
+  }
+  .ep-item:hover { filter: brightness(1.07); }
+  .ep-item:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .ep-item .ep-name { font-weight: 700; }
+  .ep-item .ep-sub {
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.78rem; color: var(--dim);
+  }
+
   .note {
     color: var(--dim);
     font-family: ui-sans-serif, system-ui, sans-serif;
-    font-size: 0.83rem; margin-top: 0.9rem;
+    font-size: 0.83rem; margin-top: 0.9rem; margin-bottom: 0;
   }
   .footer {
     text-align: center; color: var(--dim);
@@ -232,12 +250,18 @@
   <header class="masthead">
     <span class="brand"><span class="dot"></span>Study Pod</span>
     <h1>Learn anything, as a conversation.</h1>
-    <p class="tagline">Type a topic and get a podcast episode where two hosts teach it to you — written and voiced right on this page.</p>
+    <p class="tagline">A podcast where two hosts — curious Alex and expert Sam — teach you a topic. Pick an episode and press play. It all runs right here on this page.</p>
   </header>
 
-  <form id="form" class="card">
-    <label class="label" for="topic">What do you want to learn?</label>
-    <input id="topic" type="text" autocomplete="off" required
+  <section id="library" class="card">
+    <span class="label">Episode library</span>
+    <div id="library-list" class="library-list"></div>
+    <p class="note" id="library-note"></p>
+  </section>
+
+  <form id="form" class="card" hidden>
+    <label class="label" for="topic">Write a new episode</label>
+    <input id="topic" type="text" autocomplete="off"
       placeholder="e.g. How does photosynthesis work? · The French Revolution · Bayes' theorem" />
 
     <div class="options">
@@ -295,7 +319,7 @@
     <p class="note" id="tts-note" hidden>Speech isn't available in this browser, but you can read the transcript below.</p>
   </section>
 
-  <p class="footer">Episodes are written by Claude through this page and voiced by your browser. Click any line to jump there.</p>
+  <p class="footer">Episodes are voiced by your browser. Click any line in the transcript to jump there.</p>
 </div>
 
 <script>
@@ -303,6 +327,7 @@
   const $ = (id) => document.getElementById(id);
   const form = $("form"), topicEl = $("topic"), goBtn = $("go"), errEl = $("err");
   const loadingEl = $("loading"), loadingMsg = $("loading-msg");
+  const libraryList = $("library-list"), libraryNote = $("library-note");
   const playerEl = $("player"), titleEl = $("ep-title"), metaEl = $("ep-meta");
   const transcriptEl = $("transcript"), playBtn = $("play"), restartBtn = $("restart");
   const speedSel = $("speed"), dlBtn = $("download"), bar = $("bar"), ttsNote = $("tts-note");
@@ -321,6 +346,81 @@
     advanced: "The listener is experienced. Discuss nuances, edge cases, current debates, and adjacent connections at a technical level.",
   };
 
+  // ---------- Episode library ----------
+  // Ready-to-play episodes. To add more, ask Claude in the chat that owns this
+  // page to write a new one — it appends to this array and republishes to the
+  // same link, so nothing on your end changes.
+  const EPISODES = [
+    {
+      title: "Photosynthesis: How Plants Eat Sunlight",
+      topic: "photosynthesis", len: "short", lvl: "beginner",
+      lines: [
+        { speaker: "ALEX", text: "Sam, here's something that's bugged me since school. Plants don't have mouths, they don't hunt, they don't graze. So what are they actually eating?" },
+        { speaker: "SAM", text: "Perfect question, because the answer is kind of magical. Plants make their own food out of thin air, water, and sunlight. That process is photosynthesis." },
+        { speaker: "ALEX", text: "Out of thin air? Come on." },
+        { speaker: "SAM", text: "Almost literally. A huge part of a tree's mass comes from carbon dioxide it pulled out of the air. When you look at a giant oak, most of that wood was once gas floating around the atmosphere." },
+        { speaker: "ALEX", text: "Okay, that's genuinely wild. So walk me through it. What happens inside the leaf?" },
+        { speaker: "SAM", text: "Think of a leaf as a tiny solar-powered kitchen. The green stuff, chlorophyll, is the solar panel that captures sunlight. Then the plant uses that energy to run a recipe: take carbon dioxide from the air, take water from the roots, and rearrange their atoms into sugar." },
+        { speaker: "ALEX", text: "Sugar? Like actual sugar?" },
+        { speaker: "SAM", text: "Actual sugar, glucose. That's the plant's food. It burns some for energy, just like we burn the food we eat, and uses the rest as building material to grow leaves, stems, and roots." },
+        { speaker: "ALEX", text: "And where does the oxygen we breathe come in? I remember something about plants making oxygen." },
+        { speaker: "SAM", text: "Here's the fun part: oxygen is basically the leftover. To get the hydrogen it needs, the plant splits water molecules apart, and the oxygen gets released as waste. Every breath you take is a plant's garbage." },
+        { speaker: "ALEX", text: "So let me check I've got this. Sunlight is the energy, carbon dioxide and water are the ingredients, sugar is the meal, and oxygen is the byproduct." },
+        { speaker: "SAM", text: "Nailed it. And zoom out for a second: nearly all the energy in the food you eat traces back to this. A cow eats grass that photosynthesized; you eat the cow. Sunlight, captured by a leaf, is powering this whole conversation." },
+        { speaker: "ALEX", text: "That reframes lunch entirely. Thanks, Sam. I'm going to go appreciate a houseplant." },
+        { speaker: "SAM", text: "Tell it I said thanks for the oxygen. See you next episode." },
+      ],
+    },
+    {
+      title: "Bayes' Theorem: Updating What You Believe",
+      topic: "Bayes' theorem", len: "medium", lvl: "intermediate",
+      lines: [
+        { speaker: "ALEX", text: "Sam, Bayes' theorem gets talked about like it's a superpower. But every time I see the formula I just glaze over. What's the actual idea?" },
+        { speaker: "SAM", text: "Strip away the formula and it's one sentence: new evidence should update your beliefs, but only in proportion to how surprising that evidence is. It's a rule for changing your mind by the right amount." },
+        { speaker: "ALEX", text: "By the right amount. That sounds like the hard part." },
+        { speaker: "SAM", text: "It is, and here's the classic example that shows why. Imagine a test for a rare disease. The disease affects one in a thousand people. The test is ninety-nine percent accurate. You test positive. What are the odds you actually have it?" },
+        { speaker: "ALEX", text: "Ninety-nine percent, obviously. The test is ninety-nine percent accurate." },
+        { speaker: "SAM", text: "That's the trap almost everyone falls into. The real answer is about nine percent." },
+        { speaker: "ALEX", text: "Nine? That can't be right." },
+        { speaker: "SAM", text: "Let's count actual people. Take a hundred thousand of them. About a hundred truly have the disease, and the test catches ninety-nine of those. But the other ninety-nine thousand nine hundred are healthy, and one percent of them get a false positive. That's about a thousand healthy people testing positive." },
+        { speaker: "ALEX", text: "Oh. So the positives are ninety-nine sick people drowning in a thousand false alarms." },
+        { speaker: "SAM", text: "Exactly. Ninety-nine real cases out of about eleven hundred total positives. That's your nine percent. The test didn't lie, but the disease was so rare to begin with that even a good test produces mostly false alarms." },
+        { speaker: "ALEX", text: "So the thing I was ignoring was how rare the disease was in the first place." },
+        { speaker: "SAM", text: "That's the whole game. Bayesians call it the prior: what you believed before the evidence arrived. The formula just combines the prior with the new evidence. Skip the prior and you get wildly overconfident, which is what your gut did." },
+        { speaker: "ALEX", text: "So the superpower isn't the math, it's remembering to ask how likely something was before you saw the clue." },
+        { speaker: "SAM", text: "Right. And you can run it as a habit, no algebra required. Start with a rough sense of how likely something is. When evidence shows up, ask: would I see this evidence just as easily if I were wrong? If yes, it barely moves you. If it'd be shocking when you're wrong, it moves you a lot." },
+        { speaker: "ALEX", text: "That last question is the useful bit. Not just does this fit my theory, but how well does it fit the alternatives." },
+        { speaker: "SAM", text: "You just stated Bayes' theorem in plain English. Evidence is only as strong as its ability to distinguish between the possibilities. Everything else is bookkeeping." },
+        { speaker: "ALEX", text: "Okay, that finally clicked. Rare things stay unlikely until the evidence is genuinely hard to explain any other way." },
+        { speaker: "SAM", text: "That's the takeaway. Update, but earn the update. Great place to leave it — catch you next time." },
+      ],
+    },
+    {
+      title: "The French Revolution: How a Kingdom Cracked",
+      topic: "the French Revolution", len: "medium", lvl: "beginner",
+      lines: [
+        { speaker: "ALEX", text: "Sam, the French Revolution feels like this huge tangle of names and dates. If you had to start somewhere, where does it actually begin?" },
+        { speaker: "SAM", text: "Start with money. In the seventeen-eighties France is broke. Years of war, including helping the Americans against Britain, have drained the treasury. The king, Louis the Sixteenth, needs new taxes and can't just impose them." },
+        { speaker: "ALEX", text: "Wait, he's the king. Why can't he just tax people?" },
+        { speaker: "SAM", text: "Because of how society was carved up. There were three estates, three groups. The clergy, the nobility, and then everyone else, the commoners, who were about ninety-seven percent of the country. And guess which group paid almost all the taxes?" },
+        { speaker: "ALEX", text: "The ninety-seven percent, I'm assuming." },
+        { speaker: "SAM", text: "The ninety-seven percent. The rich were largely exempt. So when the king calls a big meeting of all three estates to fix the finances, the commoners show up furious, and they realize something: there are way more of us, but the old rules let the other two estates outvote us every time." },
+        { speaker: "ALEX", text: "So they change the rules?" },
+        { speaker: "SAM", text: "They break them. In the summer of seventeen eighty-nine the commoners declare themselves the National Assembly, the real voice of France. They swear an oath not to disband until France has a constitution. That's the revolution's first heartbeat: ordinary people claiming the right to govern." },
+        { speaker: "ALEX", text: "And where does storming the Bastille fit? That's the one date everybody knows." },
+        { speaker: "SAM", text: "July fourteenth, seventeen eighty-nine. Paris is tense, people fear the king will crush the Assembly by force, so a crowd storms the Bastille, a royal fortress and prison, hunting for gunpowder. It barely held any prisoners, but as a symbol it was everything: the people had taken up arms against the crown and won." },
+        { speaker: "ALEX", text: "So it's less about the building and more about the message." },
+        { speaker: "SAM", text: "Exactly. Within weeks the Assembly abolishes noble privileges and issues the Declaration of the Rights of Man: liberty, equality, that all men are born with rights. Radical stuff for a kingdom that ran on the opposite idea." },
+        { speaker: "ALEX", text: "But this isn't a happy ending, is it? I associate the Revolution with the guillotine too." },
+        { speaker: "SAM", text: "You're right to. The early hope curdles. War with the rest of Europe, fear of traitors, and power struggles lead to the Terror in seventeen ninety-three and ninety-four, where thousands, including the king and eventually the revolutionaries themselves, are executed. Revolutions that start against tyranny can breed new ones." },
+        { speaker: "ALEX", text: "That's the sobering part. So if I'm summarizing: a broke monarchy, a wildly unfair tax system, and a huge underclass that finally said no." },
+        { speaker: "SAM", text: "That's the engine. And the ideas outlived the chaos. Equality before the law, government by consent, rights that belong to people rather than kings. Those escaped France and never went back in the box." },
+        { speaker: "ALEX", text: "So the mess and the ideals both survive. That's a lot cleaner in my head now. Thanks, Sam." },
+        { speaker: "SAM", text: "Anytime. History's rarely tidy, but the through-line usually is. See you next episode." },
+      ],
+    },
+  ];
+
   let episode = null, idx = 0, playing = false;
   let voices = { ALEX: null, SAM: null };
 
@@ -338,7 +438,42 @@
   }
   if (ttsOK) { pickVoices(); speechSynthesis.onvoiceschanged = pickVoices; }
 
-  // ---------- generation ----------
+  // ---------- library ----------
+  function buildLibrary() {
+    libraryList.innerHTML = "";
+    EPISODES.forEach((ep, i) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "ep-item";
+      const name = document.createElement("span");
+      name.className = "ep-name";
+      name.textContent = ep.title;
+      const sub = document.createElement("span");
+      sub.className = "ep-sub";
+      sub.textContent = `${(LEN[ep.len] || {}).label || ""} · ${ep.lvl} · ${ep.lines.length} exchanges`;
+      btn.append(name, sub);
+      btn.addEventListener("click", () => playEpisode(i));
+      libraryList.appendChild(btn);
+    });
+
+    if (canGenerate) {
+      form.hidden = false;
+      libraryNote.textContent = "Pick an episode above, or write a brand-new one on any topic below.";
+    } else {
+      form.hidden = true;
+      libraryNote.textContent = "Pick an episode above and press play. Want one on a different topic? Ask in the chat where this page was made — new episodes appear here at the same link.";
+    }
+  }
+
+  function playEpisode(i) {
+    stopSpeech();
+    const ep = EPISODES[i];
+    episode = { title: ep.title, lines: ep.lines, topic: ep.topic, len: ep.len, lvl: ep.lvl };
+    render();
+    if (ttsOK) start(0);
+  }
+
+  // ---------- generation (only when the Claude bridge is present) ----------
   function buildPrompt(topic, len, lvl) {
     return `You are the script writer for "Study Pod", a podcast that teaches any topic through a natural conversation between two hosts:
 - ALEX: the curious co-host. Alex stands in for the listener — asking the questions a smart learner would ask, requesting examples, occasionally summarizing to check understanding.
@@ -371,7 +506,6 @@ Respond with ONLY a valid JSON object — no markdown fences, no commentary befo
       const s = JSON.parse(text);
       if (s.title && Array.isArray(s.lines) && s.lines.length) return s;
     } catch { /* fall through to salvage */ }
-    // Salvage: pull out every complete {speaker, text} pair even if the JSON was truncated.
     const title = (text.match(/"title"\s*:\s*"((?:[^"\\]|\\.)*)"/) || [])[1];
     const lines = [];
     const re = /\{\s*"speaker"\s*:\s*"(ALEX|SAM)"\s*,\s*"text"\s*:\s*"((?:[^"\\]|\\.)*)"\s*\}/g;
@@ -394,11 +528,7 @@ Respond with ONLY a valid JSON object — no markdown fences, no commentary befo
     errEl.hidden = true;
     const topic = topicEl.value.trim();
     if (!topic) return;
-    if (!canGenerate) {
-      errEl.textContent = "This page needs to be opened as a Claude artifact on claude.ai to generate episodes.";
-      errEl.hidden = false;
-      return;
-    }
+    if (!canGenerate) return; // form is hidden in this case, but guard anyway
 
     const fields = new FormData(form);
     const len = fields.get("len"), lvl = fields.get("lvl");
@@ -429,7 +559,8 @@ Respond with ONLY a valid JSON object — no markdown fences, no commentary befo
   // ---------- render ----------
   function render() {
     titleEl.textContent = episode.title;
-    metaEl.textContent = `${episode.topic} · ${LEN[episode.len].label} · ${episode.lvl} · ${episode.lines.length} exchanges`;
+    const lenLabel = (LEN[episode.len] || {}).label || "";
+    metaEl.textContent = `${episode.topic} · ${lenLabel} · ${episode.lvl} · ${episode.lines.length} exchanges`;
     transcriptEl.innerHTML = "";
     episode.lines.forEach((line, i) => {
       const div = document.createElement("div");
@@ -515,5 +646,8 @@ Respond with ONLY a valid JSON object — no markdown fences, no commentary befo
     a.click();
     URL.revokeObjectURL(url);
   });
+
+  // ---------- init ----------
+  buildLibrary();
 })();
 </script>
