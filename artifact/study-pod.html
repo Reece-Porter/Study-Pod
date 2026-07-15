@@ -1,4 +1,4 @@
-<title>Study Pod — learn anything as a conversation</title>
+<title>SC-200 Study Pod — Microsoft Security Operations Analyst</title>
 <style>
   :root {
     --bg: #14181d;
@@ -248,13 +248,13 @@
 
 <div class="wrap">
   <header class="masthead">
-    <span class="brand"><span class="dot"></span>Study Pod</span>
-    <h1>Learn anything, as a conversation.</h1>
-    <p class="tagline">A podcast where two hosts — curious Alex and expert Sam — teach you a topic. Pick an episode and press play. It all runs right here on this page.</p>
+    <span class="brand"><span class="dot"></span>SC-200 Study Pod</span>
+    <h1>Pass SC-200, one conversation at a time.</h1>
+    <p class="tagline">A podcast course for the Microsoft Security Operations Analyst exam. Curious Alex and expert Sam walk you through the whole blueprint — Defender XDR, Sentinel, Defender for Cloud, KQL, and incident response. Pick an episode and press play.</p>
   </header>
 
   <section id="library" class="card">
-    <span class="label">Episode library</span>
+    <span class="label">The SC-200 series · start at episode 1</span>
     <div id="library-list" class="library-list"></div>
     <p class="note" id="library-note"></p>
   </section>
@@ -319,7 +319,7 @@
     <p class="note" id="tts-note" hidden>Speech isn't available in this browser, but you can read the transcript below.</p>
   </section>
 
-  <p class="footer">Episodes are voiced by your browser. Click any line in the transcript to jump there.</p>
+  <p class="footer">Episodes are voiced by your browser. Click any line in the transcript to jump there. Study aid only — always confirm details against Microsoft Learn's current SC-200 skills-measured page.</p>
 </div>
 
 <script>
@@ -347,76 +347,160 @@
   };
 
   // ---------- Episode library ----------
-  // Ready-to-play episodes. To add more, ask Claude in the chat that owns this
-  // page to write a new one — it appends to this array and republishes to the
-  // same link, so nothing on your end changes.
+  // The SC-200 course. To add or go deeper on a topic, ask Claude in the chat
+  // that owns this page — it appends to this array and republishes to the same
+  // link, so nothing on your end changes.
   const EPISODES = [
     {
-      title: "Photosynthesis: How Plants Eat Sunlight",
-      topic: "photosynthesis", len: "short", lvl: "beginner",
+      title: "1. SC-200, Explained: Your Map to the Exam",
+      topic: "SC-200 exam overview", len: "medium", lvl: "beginner",
       lines: [
-        { speaker: "ALEX", text: "Sam, here's something that's bugged me since school. Plants don't have mouths, they don't hunt, they don't graze. So what are they actually eating?" },
-        { speaker: "SAM", text: "Perfect question, because the answer is kind of magical. Plants make their own food out of thin air, water, and sunlight. That process is photosynthesis." },
-        { speaker: "ALEX", text: "Out of thin air? Come on." },
-        { speaker: "SAM", text: "Almost literally. A huge part of a tree's mass comes from carbon dioxide it pulled out of the air. When you look at a giant oak, most of that wood was once gas floating around the atmosphere." },
-        { speaker: "ALEX", text: "Okay, that's genuinely wild. So walk me through it. What happens inside the leaf?" },
-        { speaker: "SAM", text: "Think of a leaf as a tiny solar-powered kitchen. The green stuff, chlorophyll, is the solar panel that captures sunlight. Then the plant uses that energy to run a recipe: take carbon dioxide from the air, take water from the roots, and rearrange their atoms into sugar." },
-        { speaker: "ALEX", text: "Sugar? Like actual sugar?" },
-        { speaker: "SAM", text: "Actual sugar, glucose. That's the plant's food. It burns some for energy, just like we burn the food we eat, and uses the rest as building material to grow leaves, stems, and roots." },
-        { speaker: "ALEX", text: "And where does the oxygen we breathe come in? I remember something about plants making oxygen." },
-        { speaker: "SAM", text: "Here's the fun part: oxygen is basically the leftover. To get the hydrogen it needs, the plant splits water molecules apart, and the oxygen gets released as waste. Every breath you take is a plant's garbage." },
-        { speaker: "ALEX", text: "So let me check I've got this. Sunlight is the energy, carbon dioxide and water are the ingredients, sugar is the meal, and oxygen is the byproduct." },
-        { speaker: "SAM", text: "Nailed it. And zoom out for a second: nearly all the energy in the food you eat traces back to this. A cow eats grass that photosynthesized; you eat the cow. Sunlight, captured by a leaf, is powering this whole conversation." },
-        { speaker: "ALEX", text: "That reframes lunch entirely. Thanks, Sam. I'm going to go appreciate a houseplant." },
-        { speaker: "SAM", text: "Tell it I said thanks for the oxygen. See you next episode." },
+        { speaker: "ALEX", text: "Sam, I've signed up to study for SC-200 and I'm already a little lost. What even is this exam?" },
+        { speaker: "SAM", text: "SC-200 is Microsoft's Security Operations Analyst certification. Passing it makes you a Microsoft Certified Security Operations Analyst Associate. The whole exam is about being the person in a security operations center who watches for threats, investigates alerts, and shuts attacks down using Microsoft's security tools." },
+        { speaker: "ALEX", text: "So it's a job-role exam, not a product exam." },
+        { speaker: "SAM", text: "Exactly. It's built around what a SOC analyst actually does day to day. And almost everything you'll learn lives in three big tools. If you hold those three in your head, the whole blueprint falls into place." },
+        { speaker: "ALEX", text: "Okay, hit me with the three." },
+        { speaker: "SAM", text: "One: Microsoft Defender XDR, the extended detection and response suite that protects endpoints, email, identities, and cloud apps. Two: Microsoft Sentinel, the cloud SIEM and SOAR that pulls logs from everywhere and automates response. Three: Microsoft Defender for Cloud, which protects your cloud infrastructure and scores your security posture." },
+        { speaker: "ALEX", text: "XDR, Sentinel, Defender for Cloud. What do those first two letters, SIEM and SOAR, actually mean?" },
+        { speaker: "SAM", text: "SIEM is security information and event management, basically a giant searchable log warehouse that raises alerts. SOAR is security orchestration, automation, and response, the part that reacts automatically, like disabling a compromised account without a human clicking anything. Sentinel does both." },
+        { speaker: "ALEX", text: "Got it. And how is the exam actually structured?" },
+        { speaker: "SAM", text: "The skills are grouped into three domains: managing the security operations environment, responding to incidents, and hunting for threats. Microsoft publishes the exact percentage weightings on the skills-measured page, and they retune them periodically, so always check the current one. Roughly, incident response and Sentinel carry the most weight." },
+        { speaker: "ALEX", text: "Any logistics I should know before I book it?" },
+        { speaker: "SAM", text: "Plan for about a hundred and twenty minutes, somewhere in the range of forty to sixty questions, and you need around seven hundred out of a thousand to pass. Expect multiple choice, plus case studies and hands-on style questions. Prices vary by country but it's roughly a hundred and sixty-five US dollars." },
+        { speaker: "ALEX", text: "You said the blueprint changes. Anything new I should watch for in twenty twenty-six?" },
+        { speaker: "SAM", text: "Yes, and this is important. Microsoft is refreshing SC-200 toward its newer capabilities: Security Copilot, its AI assistant for analysts; the Sentinel data lake and Sentinel Graph for large-scale hunting; and newer query features. The three domains stay the same, but the tooling underneath is getting an AI upgrade. Study the fundamentals first, then layer those on." },
+        { speaker: "ALEX", text: "So my study order should probably follow the tools. Learn Defender XDR, learn Sentinel, learn Defender for Cloud, then hunting and response across all of them." },
+        { speaker: "SAM", text: "That's exactly how we'll run this series. Next episode we go deep on Defender XDR, because once you understand the unified portal, half the exam feels familiar. And do get a free Microsoft trial tenant so you can click through everything, hands-on beats memorizing every time." },
+        { speaker: "ALEX", text: "A map and a plan. That's what I needed. Let's do it." },
+        { speaker: "SAM", text: "Onward. Episode two, Defender XDR, whenever you're ready." },
       ],
     },
     {
-      title: "Bayes' Theorem: Updating What You Believe",
-      topic: "Bayes' theorem", len: "medium", lvl: "intermediate",
+      title: "2. Microsoft Defender XDR: One Portal, Many Workloads",
+      topic: "Microsoft Defender XDR", len: "medium", lvl: "beginner",
       lines: [
-        { speaker: "ALEX", text: "Sam, Bayes' theorem gets talked about like it's a superpower. But every time I see the formula I just glaze over. What's the actual idea?" },
-        { speaker: "SAM", text: "Strip away the formula and it's one sentence: new evidence should update your beliefs, but only in proportion to how surprising that evidence is. It's a rule for changing your mind by the right amount." },
-        { speaker: "ALEX", text: "By the right amount. That sounds like the hard part." },
-        { speaker: "SAM", text: "It is, and here's the classic example that shows why. Imagine a test for a rare disease. The disease affects one in a thousand people. The test is ninety-nine percent accurate. You test positive. What are the odds you actually have it?" },
-        { speaker: "ALEX", text: "Ninety-nine percent, obviously. The test is ninety-nine percent accurate." },
-        { speaker: "SAM", text: "That's the trap almost everyone falls into. The real answer is about nine percent." },
-        { speaker: "ALEX", text: "Nine? That can't be right." },
-        { speaker: "SAM", text: "Let's count actual people. Take a hundred thousand of them. About a hundred truly have the disease, and the test catches ninety-nine of those. But the other ninety-nine thousand nine hundred are healthy, and one percent of them get a false positive. That's about a thousand healthy people testing positive." },
-        { speaker: "ALEX", text: "Oh. So the positives are ninety-nine sick people drowning in a thousand false alarms." },
-        { speaker: "SAM", text: "Exactly. Ninety-nine real cases out of about eleven hundred total positives. That's your nine percent. The test didn't lie, but the disease was so rare to begin with that even a good test produces mostly false alarms." },
-        { speaker: "ALEX", text: "So the thing I was ignoring was how rare the disease was in the first place." },
-        { speaker: "SAM", text: "That's the whole game. Bayesians call it the prior: what you believed before the evidence arrived. The formula just combines the prior with the new evidence. Skip the prior and you get wildly overconfident, which is what your gut did." },
-        { speaker: "ALEX", text: "So the superpower isn't the math, it's remembering to ask how likely something was before you saw the clue." },
-        { speaker: "SAM", text: "Right. And you can run it as a habit, no algebra required. Start with a rough sense of how likely something is. When evidence shows up, ask: would I see this evidence just as easily if I were wrong? If yes, it barely moves you. If it'd be shocking when you're wrong, it moves you a lot." },
-        { speaker: "ALEX", text: "That last question is the useful bit. Not just does this fit my theory, but how well does it fit the alternatives." },
-        { speaker: "SAM", text: "You just stated Bayes' theorem in plain English. Evidence is only as strong as its ability to distinguish between the possibilities. Everything else is bookkeeping." },
-        { speaker: "ALEX", text: "Okay, that finally clicked. Rare things stay unlikely until the evidence is genuinely hard to explain any other way." },
-        { speaker: "SAM", text: "That's the takeaway. Update, but earn the update. Great place to leave it — catch you next time." },
+        { speaker: "ALEX", text: "Last time you called Defender XDR a suite. What does the X-D-R actually stand for, and why is it a suite instead of one product?" },
+        { speaker: "SAM", text: "XDR is extended detection and response. The idea is that attacks don't stay in one place: a phishing email leads to a stolen password, which leads to a compromised laptop, which leads to data theft in a cloud app. XDR watches all of those layers at once and stitches the clues together." },
+        { speaker: "ALEX", text: "So it's several protection tools sharing one brain." },
+        { speaker: "SAM", text: "Perfect way to put it. And they share one home: the Microsoft Defender portal at security dot microsoft dot com. For the exam, know the workloads that feed into it. There are five worth memorizing." },
+        { speaker: "ALEX", text: "Let's name them." },
+        { speaker: "SAM", text: "One, Defender for Endpoint, which protects devices, laptops and servers, with EDR, endpoint detection and response. Two, Defender for Office 365, which protects email and collaboration from phishing and malicious links using features like Safe Links and Safe Attachments." },
+        { speaker: "ALEX", text: "That's devices and email. What about the people logging in?" },
+        { speaker: "SAM", text: "Three, Defender for Identity, which watches your on-premises Active Directory for things like lateral movement and credential theft. Four, Defender for Cloud Apps, a cloud access security broker that governs your SaaS apps, think shadow IT discovery and risky OAuth grants." },
+        { speaker: "ALEX", text: "And the fifth?" },
+        { speaker: "SAM", text: "Five, Microsoft Entra ID Protection, which scores identity risk, flagging risky sign-ins and risky users based on signals like impossible travel or leaked credentials. Entra ID is the new name for Azure Active Directory, by the way." },
+        { speaker: "ALEX", text: "Okay, five workloads. Here's my real question: if each one raises its own alerts, isn't that just five noisy inboxes?" },
+        { speaker: "SAM", text: "That's the magic of the shared brain. XDR correlates related alerts across all five into a single incident. So instead of five separate alerts, the analyst sees one incident that says, here's the phishing email, the account it compromised, the device it landed on, and the cloud app it touched, all as one story." },
+        { speaker: "ALEX", text: "That's a huge deal for someone drowning in alerts. What can I actually do to a threat from that portal?" },
+        { speaker: "SAM", text: "Real response actions. On a device you can isolate it from the network, run an antivirus scan, or collect an investigation package. On an identity you can force a password reset or confirm the user as compromised. There's also automated investigation and response, AIR, which can investigate and remediate low-level threats on its own." },
+        { speaker: "ALEX", text: "So let me recap. One portal, five workloads, alerts correlated into single incidents, and I can contain threats right there." },
+        { speaker: "SAM", text: "That's Defender XDR in a nutshell. One more term to file away: advanced hunting, a query tool inside the portal for proactively searching all that raw data. We'll come back to it in the KQL episode." },
+        { speaker: "ALEX", text: "Endpoint, Office, Identity, Cloud Apps, Entra. I'll drill those five until they're reflex." },
+        { speaker: "SAM", text: "Do that and Defender questions become easy points. Next up, the big one, Microsoft Sentinel." },
       ],
     },
     {
-      title: "The French Revolution: How a Kingdom Cracked",
-      topic: "the French Revolution", len: "medium", lvl: "beginner",
+      title: "3. Microsoft Sentinel: SIEM and SOAR in the Cloud",
+      topic: "Microsoft Sentinel", len: "long", lvl: "intermediate",
       lines: [
-        { speaker: "ALEX", text: "Sam, the French Revolution feels like this huge tangle of names and dates. If you had to start somewhere, where does it actually begin?" },
-        { speaker: "SAM", text: "Start with money. In the seventeen-eighties France is broke. Years of war, including helping the Americans against Britain, have drained the treasury. The king, Louis the Sixteenth, needs new taxes and can't just impose them." },
-        { speaker: "ALEX", text: "Wait, he's the king. Why can't he just tax people?" },
-        { speaker: "SAM", text: "Because of how society was carved up. There were three estates, three groups. The clergy, the nobility, and then everyone else, the commoners, who were about ninety-seven percent of the country. And guess which group paid almost all the taxes?" },
-        { speaker: "ALEX", text: "The ninety-seven percent, I'm assuming." },
-        { speaker: "SAM", text: "The ninety-seven percent. The rich were largely exempt. So when the king calls a big meeting of all three estates to fix the finances, the commoners show up furious, and they realize something: there are way more of us, but the old rules let the other two estates outvote us every time." },
-        { speaker: "ALEX", text: "So they change the rules?" },
-        { speaker: "SAM", text: "They break them. In the summer of seventeen eighty-nine the commoners declare themselves the National Assembly, the real voice of France. They swear an oath not to disband until France has a constitution. That's the revolution's first heartbeat: ordinary people claiming the right to govern." },
-        { speaker: "ALEX", text: "And where does storming the Bastille fit? That's the one date everybody knows." },
-        { speaker: "SAM", text: "July fourteenth, seventeen eighty-nine. Paris is tense, people fear the king will crush the Assembly by force, so a crowd storms the Bastille, a royal fortress and prison, hunting for gunpowder. It barely held any prisoners, but as a symbol it was everything: the people had taken up arms against the crown and won." },
-        { speaker: "ALEX", text: "So it's less about the building and more about the message." },
-        { speaker: "SAM", text: "Exactly. Within weeks the Assembly abolishes noble privileges and issues the Declaration of the Rights of Man: liberty, equality, that all men are born with rights. Radical stuff for a kingdom that ran on the opposite idea." },
-        { speaker: "ALEX", text: "But this isn't a happy ending, is it? I associate the Revolution with the guillotine too." },
-        { speaker: "SAM", text: "You're right to. The early hope curdles. War with the rest of Europe, fear of traitors, and power struggles lead to the Terror in seventeen ninety-three and ninety-four, where thousands, including the king and eventually the revolutionaries themselves, are executed. Revolutions that start against tyranny can breed new ones." },
-        { speaker: "ALEX", text: "That's the sobering part. So if I'm summarizing: a broke monarchy, a wildly unfair tax system, and a huge underclass that finally said no." },
-        { speaker: "SAM", text: "That's the engine. And the ideas outlived the chaos. Equality before the law, government by consent, rights that belong to people rather than kings. Those escaped France and never went back in the box." },
-        { speaker: "ALEX", text: "So the mess and the ideals both survive. That's a lot cleaner in my head now. Thanks, Sam." },
-        { speaker: "SAM", text: "Anytime. History's rarely tidy, but the through-line usually is. See you next episode." },
+        { speaker: "ALEX", text: "You've hyped Sentinel as the heaviest part of the exam. Where does it fit next to Defender XDR? Don't they overlap?" },
+        { speaker: "SAM", text: "Good instinct. Defender XDR is deep but focused on Microsoft's own workloads. Sentinel is broad: it's a cloud-native SIEM that ingests logs from anything, your firewalls, AWS, non-Microsoft tools, and Defender XDR itself. Think of Sentinel as the single pane of glass over your entire environment." },
+        { speaker: "ALEX", text: "So Defender XDR can actually feed into Sentinel." },
+        { speaker: "SAM", text: "Very commonly, yes. A one-click connector streams every Defender incident into Sentinel. Now, the first thing to know: Sentinel runs on top of a Log Analytics workspace. That workspace is the database where all the logs land, and you query it with a language called KQL." },
+        { speaker: "ALEX", text: "How do the logs get in?" },
+        { speaker: "SAM", text: "Data connectors. Sentinel ships with hundreds of them, in the Content Hub, for Microsoft and third-party sources. You enable a connector, and events start flowing into tables in that workspace." },
+        { speaker: "ALEX", text: "Logs are in. How does Sentinel decide something is worth my attention?" },
+        { speaker: "SAM", text: "Analytics rules. They watch the incoming data and generate alerts, which become incidents. For the exam, know the rule types. Scheduled rules run a KQL query on a timer. Near-real-time rules, NRT, run about once a minute for speed. Microsoft security rules simply pass through alerts from Defender products." },
+        { speaker: "ALEX", text: "Those three make sense. Are there smarter ones?" },
+        { speaker: "SAM", text: "Two more, and they're machine-learning based. Fusion detects multi-stage attacks by correlating low-fidelity signals into a high-confidence incident. And anomaly rules baseline normal behavior and flag deviations. You don't hand-write the logic for those; Microsoft trains them." },
+        { speaker: "ALEX", text: "So scheduled, near-real-time, Microsoft security, Fusion, and anomaly. Once a rule fires and I have an incident, what tools do I get?" },
+        { speaker: "SAM", text: "You get an investigation experience with entities, the users, hosts, and IPs involved, and an investigation graph to see how they connect. You get workbooks, which are interactive dashboards for visualizing trends. And you get UEBA, user and entity behavior analytics, which profiles normal behavior to spot insider threats." },
+        { speaker: "ALEX", text: "That's the SIEM half, detection and investigation. Where's the SOAR, the automation?" },
+        { speaker: "SAM", text: "This is the payoff. Sentinel automates response with playbooks, which are built on Azure Logic Apps, basically visual workflows. A playbook can automatically enrich an incident, block an IP, disable a user, or post to Teams. You trigger playbooks with automation rules, which also handle things like auto-assigning or auto-closing incidents." },
+        { speaker: "ALEX", text: "So automation rules are the traffic cop, and playbooks are the workers that actually do things." },
+        { speaker: "SAM", text: "Exactly right, that's a great line to remember. Automation rules decide what happens; playbooks carry it out. Together that's your SOAR, and it's what takes response time from hours to seconds." },
+        { speaker: "ALEX", text: "You mentioned newer twenty twenty-six features earlier. Do any touch Sentinel?" },
+        { speaker: "SAM", text: "Several. There's a Sentinel data lake for storing huge volumes of logs cheaply, summary rules that pre-aggregate data, and Sentinel Graph plus Security Copilot for AI-assisted hunting. Learn classic Sentinel cold first; these sit on top of the same concepts." },
+        { speaker: "ALEX", text: "Let me summarize the whole thing. Log Analytics workspace holds the data, connectors fill it, analytics rules create incidents, workbooks and entities help me investigate, and automation rules plus playbooks respond." },
+        { speaker: "SAM", text: "That is Sentinel, start to finish, and if you can recite that chain you've got the backbone of the exam. Next episode, we cover Defender for Cloud, then we get hands-on with KQL." },
+        { speaker: "ALEX", text: "The chain finally makes sense as one flow, not a pile of features. Thanks, Sam." },
+        { speaker: "SAM", text: "That flow is the whole point. See you in episode four." },
+      ],
+    },
+    {
+      title: "4. Defender for Cloud: Posture and Workload Protection",
+      topic: "Microsoft Defender for Cloud", len: "medium", lvl: "intermediate",
+      lines: [
+        { speaker: "ALEX", text: "Third tool: Microsoft Defender for Cloud. How's it different from Defender XDR? The names blur together." },
+        { speaker: "SAM", text: "They do, so pin this down. Defender XDR protects endpoints, email, and identities, the things people use. Defender for Cloud protects your cloud infrastructure, the servers, storage accounts, databases, and containers your apps run on, across Azure and even AWS and GCP." },
+        { speaker: "ALEX", text: "So one guards the users, the other guards the plumbing." },
+        { speaker: "SAM", text: "Nicely put. And it does two jobs, worth learning as two acronyms. First, CSPM, cloud security posture management: is my environment configured securely? Second, CWPP, cloud workload protection platform: is anything actively attacking my running workloads?" },
+        { speaker: "ALEX", text: "Start with posture. How do I even measure whether my setup is secure?" },
+        { speaker: "SAM", text: "The headline feature is Secure Score, a single percentage of how secure your environment is. Below it sits a list of recommendations, concrete fixes like enable multifactor authentication or encrypt this storage account. Each fix you apply raises the score. There's also a regulatory compliance dashboard mapping your posture to standards like ISO or PCI." },
+        { speaker: "ALEX", text: "So Secure Score is the number, recommendations are the to-do list to raise it." },
+        { speaker: "SAM", text: "Exactly. And posture management has a free tier called Foundational CSPM that gives you the score and recommendations. Upgrading to Defender CSPM, the paid tier, adds deeper features like attack path analysis, which shows how an attacker could chain weaknesses to reach your crown jewels, and agentless scanning." },
+        { speaker: "ALEX", text: "Now the other half, workload protection. That's the active-threats part?" },
+        { speaker: "SAM", text: "Right. You turn on Defender plans per resource type: Defender for Servers, for Storage, for SQL, for Containers, for App Service, and more. Each plan is a paid add-on that watches that resource for real attacks and raises security alerts, like someone brute-forcing a VM or malware landing in a storage account." },
+        { speaker: "ALEX", text: "And where do those alerts go? Back to the same portal?" },
+        { speaker: "SAM", text: "Yes, and this ties the whole series together. Defender for Cloud alerts flow into Defender XDR and can stream into Sentinel. So an infrastructure attack shows up in the same incident queue as everything else. Three tools, one investigation experience." },
+        { speaker: "ALEX", text: "Any classic features the exam likes to test?" },
+        { speaker: "SAM", text: "A couple. Just-in-time VM access locks management ports until someone requests temporary access, shrinking the attack surface. And because it's multicloud, you connect AWS and GCP accounts to get one posture view across all three clouds." },
+        { speaker: "ALEX", text: "Let me lock it in. Defender for Cloud does posture, that's Secure Score and recommendations, and workload protection, that's Defender plans raising alerts, all feeding the same incident queue." },
+        { speaker: "SAM", text: "That's the exam-ready summary. You now know all three tools. Time to learn the language that ties investigation together: KQL." },
+        { speaker: "ALEX", text: "The mysterious query language. I've been waiting for this one." },
+        { speaker: "SAM", text: "It's more approachable than you think. Episode five, let's write some." },
+      ],
+    },
+    {
+      title: "5. Threat Hunting with KQL",
+      topic: "KQL and threat hunting", len: "long", lvl: "intermediate",
+      lines: [
+        { speaker: "ALEX", text: "Okay Sam, KQL. It's shown up in every episode. What is it, and why does it matter so much for SC-200?" },
+        { speaker: "SAM", text: "KQL is Kusto Query Language, the language you use to ask questions of your security data. It powers Sentinel analytics rules, Sentinel hunting, and advanced hunting in Defender XDR. If you're comfortable with KQL, a huge slice of the exam becomes readable. If you're not, those questions feel like hieroglyphics." },
+        { speaker: "ALEX", text: "I know SQL a little. Is it like that?" },
+        { speaker: "SAM", text: "Same idea, friendlier shape. It's read-only, you're querying, never changing data, and it flows left to right through a pipe. You start with a table, then pipe it through filters and transformations. The pipe character, the vertical bar, means and then." },
+        { speaker: "ALEX", text: "Can you walk me through a real one, piece by piece?" },
+        { speaker: "SAM", text: "Sure. Picture: SigninLogs, pipe, where TimeGenerated is greater than ago of one day, pipe, where ResultType is not zero, pipe, summarize count by IPAddress. In English: take the sign-in logs, keep the last twenty-four hours, keep only failed sign-ins, then count failures per IP address." },
+        { speaker: "ALEX", text: "Oh, that actually reads like a sentence. So SigninLogs is the table, and each pipe adds a step." },
+        { speaker: "SAM", text: "Exactly. Now learn a handful of operators and you can read most queries. Where filters rows. Project picks which columns to keep. Summarize aggregates, like count or sum, usually with by to group. Extend adds a calculated column. And order by sorts. That short list covers most of what you'll see." },
+        { speaker: "ALEX", text: "What about time? Security is all about when." },
+        { speaker: "SAM", text: "Time is central. Ago is your friend: ago of one hour, ago of seven days. There's a between operator for ranges too. Almost every hunt starts by narrowing the time window, both because it's relevant and because it keeps queries fast." },
+        { speaker: "ALEX", text: "You keep saying advanced hunting in XDR and hunting in Sentinel. Are those different?" },
+        { speaker: "SAM", text: "Same language, different data. In Defender XDR, advanced hunting queries workload tables with clear names, DeviceProcessEvents for programs that ran, DeviceNetworkEvents for connections, EmailEvents for mail, IdentityLogonEvents for authentications. In Sentinel you query whatever your connectors ingested, which is broader." },
+        { speaker: "ALEX", text: "So the skill transfers, I just point it at different tables." },
+        { speaker: "SAM", text: "That's the beauty of it, learn KQL once, hunt everywhere. Now, hunting specifically. It's proactive: instead of waiting for an alert, you go looking for attackers who slipped past. Sentinel gives you built-in hunting queries, many mapped to the MITRE ATT and CK framework, the industry catalog of attacker techniques." },
+        { speaker: "ALEX", text: "If I find something suspicious mid-hunt, how do I hang onto it?" },
+        { speaker: "SAM", text: "Bookmarks. When a query row looks interesting, you bookmark it to save that evidence and optionally attach it to an incident. There's also livestream to watch a query in real time, and Jupyter notebooks for heavy, multi-step investigations with custom code." },
+        { speaker: "ALEX", text: "Let me play it back. KQL flows through pipes, a few operators do most of the work, I filter by time, and the same language hunts in both XDR and Sentinel, with bookmarks to save what I find." },
+        { speaker: "SAM", text: "That's a hunter's mindset right there. Honestly, the single highest-value thing you can do to prep is write twenty or thirty KQL queries yourself in a trial tenant. Reading it is fine; writing it is what sticks." },
+        { speaker: "ALEX", text: "Challenge accepted. One episode left, right?" },
+        { speaker: "SAM", text: "One left, and it ties everything together: what to actually do when an incident lands. Incident response, end to end." },
+      ],
+    },
+    {
+      title: "6. Incident Response, End to End",
+      topic: "SC-200 incident response and automation", len: "long", lvl: "intermediate",
+      lines: [
+        { speaker: "ALEX", text: "Final episode. An incident just landed in my queue. Before I touch a button, is there a mental framework I should follow?" },
+        { speaker: "SAM", text: "Yes, and it's worth internalizing because the exam thinks in this flow. Triage, investigate, contain and remediate, recover, then learn. Triage is deciding what's real and urgent. Investigate is understanding the scope. Contain is stopping the bleeding. Recover is getting back to normal. Learn is tuning so it's easier next time." },
+        { speaker: "ALEX", text: "Start with triage. I've got a full queue. How do I prioritize?" },
+        { speaker: "SAM", text: "Sort by severity and status, and look at what's assigned to you. Each incident carries a severity, high, medium, low, and the entities involved. Your first job is separating true positives from false positives, real attacks from noise. In Defender XDR you formally classify an incident, and that feedback even helps tune future detections." },
+        { speaker: "ALEX", text: "Say it's real. How do I investigate the scope without spending all day?" },
+        { speaker: "SAM", text: "Lean on what we've built. In Defender XDR the incident already correlates alerts across email, device, and identity, with an attack story and evidence laid out. In Sentinel you use the investigation graph to pivot across entities visually, follow the user to the host to the IP. Both let you add comments so your team stays in sync." },
+        { speaker: "ALEX", text: "Now containment. What can I actually pull the trigger on?" },
+        { speaker: "SAM", text: "The response actions we mentioned earlier. Isolate a device, run a scan, collect forensics. Disable or force-reset a compromised account. Block a malicious IP or URL. The point of containment is to stop the attacker's spread even before you fully understand every detail." },
+        { speaker: "ALEX", text: "Here's where I get nervous, though. Doing all that by hand, on every incident, at three in the morning? That's not realistic." },
+        { speaker: "SAM", text: "And that's exactly why SOAR exists, and why it's so testable. Remember the two pieces from the Sentinel episode: automation rules and playbooks. Automation rules are the traffic cop, they decide when to act, on which incidents, in what order. Playbooks are the workers, the Logic Apps that carry out the steps." },
+        { speaker: "ALEX", text: "Give me a concrete three-in-the-morning example." },
+        { speaker: "SAM", text: "An incident fires for a risky sign-in. An automation rule instantly runs a playbook that disables the user in Entra ID, blocks the IP, opens a ticket in ServiceNow, and posts to your Teams channel, then auto-assigns the incident to the on-call analyst. All in seconds, no human awake. That collapses your mean time to respond." },
+        { speaker: "ALEX", text: "So automation isn't a nice-to-have, it's the core skill. What about the last step, learning?" },
+        { speaker: "SAM", text: "Tuning. If a detection keeps firing false positives, you refine the analytics rule or suppress the noise so real threats don't get buried. Good SOC teams treat every incident as feedback that makes the next detection sharper. On the exam, watch for questions about reducing alert fatigue, that's this step." },
+        { speaker: "ALEX", text: "Let me tie the whole series together. Three tools feed one incident queue, KQL lets me hunt and investigate, and response runs the loop of triage, investigate, contain, recover, and learn, with automation doing the heavy lifting." },
+        { speaker: "SAM", text: "That's not just a summary of this episode, that's the entire SC-200 blueprint in three sentences. If you can say that and mean it, you understand the exam." },
+        { speaker: "ALEX", text: "Any last advice before I go book it?" },
+        { speaker: "SAM", text: "Three things. Do the free Microsoft Learn modules for hands-on labs. Practice KQL until it's comfortable. And spend real time clicking around a trial Defender and Sentinel tenant, because this exam rewards people who've actually used the tools. You've got the map now, go get the cert." },
+        { speaker: "ALEX", text: "Map, plan, and a lot less fear than when we started. Thank you, Sam." },
+        { speaker: "SAM", text: "Anytime. Go pass SC-200, and come back and tell me when you do. That's a wrap on the series." },
       ],
     },
   ];
@@ -458,10 +542,10 @@
 
     if (canGenerate) {
       form.hidden = false;
-      libraryNote.textContent = "Pick an episode above, or write a brand-new one on any topic below.";
+      libraryNote.textContent = "Play the SC-200 series above in order, or write an extra episode on any topic below.";
     } else {
       form.hidden = true;
-      libraryNote.textContent = "Pick an episode above and press play. Want one on a different topic? Ask in the chat where this page was made — new episodes appear here at the same link.";
+      libraryNote.textContent = "Play the six episodes in order for a full SC-200 walkthrough. Want a topic drilled deeper — say KQL practice or Sentinel playbooks? Ask in the chat where this page was made, and a new episode appears here at the same link.";
     }
   }
 
